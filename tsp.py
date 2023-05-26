@@ -1,6 +1,7 @@
 import random
 import numpy as np
 from display import display
+from tspSolver import tspSolver
 
 
 def generateElements(matrix, n):
@@ -23,3 +24,4 @@ n = 5
 matrix = np.empty((n, n), dtype=int)
 matrix = generateElements(matrix, n)
 display(matrix)
+cost = tspSolver(matrix)
