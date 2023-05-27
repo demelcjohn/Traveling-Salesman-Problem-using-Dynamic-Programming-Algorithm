@@ -23,28 +23,29 @@ def generateElements(matrix, n):
 
 
 def tspSolver(i, mask):
-
-    if mask == 0:
-        return dist[0][i]
-
-    # if memo[i][mask] != -1:
-    #     return memo[i][mask]
+    if (mask & (~(1 << i))) == 1:
+        return dist[i][0]
+    if memo[i][mask] != -1:
+        return memo[i][mask]
 
     res = 10**10
 
     for j in range(n):
-        if (mask & (1 << j)) != 0 and j != i:
-            res = min(res, tspSolver(j, mask & (~(1 << i))))
+        if (mask & (1 << j)) != 0 and j != i and j != 0:
+            res = min(res, tspSolver(j, mask & (~(1 << i)))+dist[i][j])
+
+    memo[i][mask] = res
     return res
 
 
 dist = np.empty((n, n), dtype=int)
 dist = generateElements(dist, n)
+
 display(dist)
 
 cost = 10**10
 
-for i in range(0, n):
-    cost = min(cost, tspSolver(i, (1 << (n))-1))
+for i in range(1, n):
+    cost = min(cost, tspSolver(i, (1 << (n))-1)+dist[0][i])
 
 print("The cost of most efficient tour = " + str(cost))
