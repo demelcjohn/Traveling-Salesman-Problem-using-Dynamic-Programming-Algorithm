@@ -1,7 +1,10 @@
 import random
 import numpy as np
 from display import display
-from tspSolver import tspSolver
+
+n = 5
+
+memo = [[-1]*(1 << (n)) for _ in range(n)]
 
 
 def generateElements(matrix, n):
@@ -19,9 +22,29 @@ def generateElements(matrix, n):
     return matrix
 
 
-n = 5
+def tspSolver(i, mask):
 
-matrix = np.empty((n, n), dtype=int)
-matrix = generateElements(matrix, n)
-display(matrix)
-cost = tspSolver(matrix)
+    if mask == 0:
+        return dist[0][i]
+
+    # if memo[i][mask] != -1:
+    #     return memo[i][mask]
+
+    res = 10**10
+
+    for j in range(n):
+        if (mask & (1 << j)) != 0 and j != i:
+            res = min(res, tspSolver(j, mask & (~(1 << i))))
+    return res
+
+
+dist = np.empty((n, n), dtype=int)
+dist = generateElements(dist, n)
+display(dist)
+
+cost = 10**10
+
+for i in range(0, n):
+    cost = min(cost, tspSolver(i, (1 << (n))-1))
+
+print("The cost of most efficient tour = " + str(cost))
