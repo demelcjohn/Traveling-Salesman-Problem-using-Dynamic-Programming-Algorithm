@@ -3,9 +3,12 @@ import random
 import numpy as np
 from display import display
 
-n = 4
+n = 5
 
-memo = [[-1]*(1 << (n)) for _ in range(n)]
+memo =  [[(-1, []) for _ in range(1 << n)] for _ in range(n)]
+
+# print(memo)
+# memoStack = [[[]]*(1 << (n)) for _ in range(n)]
 minStack = []
 
 
@@ -27,7 +30,8 @@ def generateElements(matrix, n):
 def tspSolver(i, mask,stack):
     if (mask & (~(1 << i))) == 1:
         return dist[i][0],stack
-    # if memo[i][mask] != -1:
+    # var,lst=memo[i][mask]
+    # if var != -1:
     #     return memo[i][mask]
 
     resMin = 10**10
@@ -41,15 +45,16 @@ def tspSolver(i, mask,stack):
             if resMin > res:
                 resMin,stack = res,stack1
 
-    memo[i][mask] = res
+    memo[i][mask] = resMin,stack
+    # print(i,mask,memo[i][mask])
     return resMin,stack
 
 
 # dist = np.empty((n, n), dtype=int)
 # dist = generateElements(dist, n)
 
-dist = [[0, 10, 15, 20], [10, 0, 35, 25],
-            [15, 35, 0, 30], [20, 25, 30, 0]]
+dist = [[0, 16,18,13,20], [21,0,16,27,14],
+            [12,14,0,15,21], [11,18,19,0,21],[16,14,17,12,0]]
 dist = np.array(dist)
 display(dist)
 
@@ -65,6 +70,7 @@ for i in range(1, n):
     cost = cost +dist[0][i]
     if minCost > cost:
         minCost,minStack = cost,stack
-    print(minCost, minStack)
+    print(cost, stack)
 print("The cost of most efficient tour = " + str(minCost))
-print(minStack)
+print("The order of nodes : ",minStack)
+# print(memo)
