@@ -1,10 +1,12 @@
+import copy
 import random
 import numpy as np
 from display import display
 
-n = 5
+n = 4
 
 memo = [[-1]*(1 << (n)) for _ in range(n)]
+minStack = []
 
 
 def generateElements(matrix, n):
@@ -22,30 +24,47 @@ def generateElements(matrix, n):
     return matrix
 
 
-def tspSolver(i, mask):
+def tspSolver(i, mask,stack):
     if (mask & (~(1 << i))) == 1:
-        return dist[i][0]
-    if memo[i][mask] != -1:
-        return memo[i][mask]
+        return dist[i][0],stack
+    # if memo[i][mask] != -1:
+    #     return memo[i][mask]
 
-    res = 10**10
-
+    resMin = 10**10
+    stack2 = copy.copy(stack)
     for j in range(n):
         if (mask & (1 << j)) != 0 and j != i and j != 0:
-            res = min(res, tspSolver(j, mask & (~(1 << i)))+dist[i][j])
+            stack1 = copy.copy(stack2)
+            stack1.append(j)
+            res,stack1 = tspSolver(j, mask & (~(1 << i)),stack1)
+            res = res +dist[i][j]
+            if resMin > res:
+                resMin,stack = res,stack1
 
     memo[i][mask] = res
-    return res
+    return resMin,stack
 
 
-dist = np.empty((n, n), dtype=int)
-dist = generateElements(dist, n)
+# dist = np.empty((n, n), dtype=int)
+# dist = generateElements(dist, n)
 
+dist = [[0, 10, 15, 20], [10, 0, 35, 25],
+            [15, 35, 0, 30], [20, 25, 30, 0]]
+dist = np.array(dist)
 display(dist)
 
-cost = 10**10
+minCost = 10**10
+
+stack = []
+minStack.append(0)
 
 for i in range(1, n):
-    cost = min(cost, tspSolver(i, (1 << (n))-1)+dist[0][i])
-
-print("The cost of most efficient tour = " + str(cost))
+    stack = [0]
+    stack.append(i)
+    cost,stack = tspSolver(i, (1 << (n))-1,stack)
+    cost = cost +dist[0][i]
+    if minCost > cost:
+        minCost,minStack = cost,stack
+    print(minCost, minStack)
+print("The cost of most efficient tour = " + str(minCost))
+print(minStack)
