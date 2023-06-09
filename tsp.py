@@ -2,6 +2,7 @@ import copy
 import random
 import numpy as np
 from display import display
+from rep import representation
 
 n = 5
 
@@ -59,11 +60,10 @@ def tspSolver(i, mask,stack):
 # dist = np.empty((n, n), dtype=int)
 # dist = generateElements(dist, n)
 
-dist = [[0, 2, 5 ,7, 1],
-[6, 0, 3, 8, 2],
-[8, 7, 0, 4, 7],
-[12, 4, 6, 0, 5],
-[1, 3, 2, 8 ,0]]
+dist =[[0, 16,18,13,20], [21,0,16,27,14],
+            [12,14,0,15,21], [11,18,19,0,21],[16,14,17,12,0]]
+
+
 
 dist = np.array(dist)
 display(dist)
@@ -85,3 +85,4 @@ for i in range(1,3):
 print("The cost of most efficient tour = " + str(minCost))
 print("The order of nodes : ",minStack)
 # print(memo)
+representation(dist,minStack,n)
