@@ -28,33 +28,43 @@ def generateElements(matrix, n):
 
 
 def tspSolver(i, mask,stack):
+    # print(i,mask,stack)
     if (mask & (~(1 << i))) == 1:
+        memo[i][mask] = dist[i][0],stack
+        # print("base cond:",i,mask,dist[i][0],stack)
         return dist[i][0],stack
-    # var,lst=memo[i][mask]
-    # if var != -1:
-    #     return memo[i][mask]
+    var,lst=memo[i][mask]
+    if var != -1:
+        # print("In var = :",i,mask,memo[i][mask])
+        return memo[i][mask]
 
     resMin = 10**10
     stack2 = copy.copy(stack)
     for j in range(n):
+        stack3 = []
         if (mask & (1 << j)) != 0 and j != i and j != 0:
             stack1 = copy.copy(stack2)
-            stack1.append(j)
             res,stack1 = tspSolver(j, mask & (~(1 << i)),stack1)
             res = res +dist[i][j]
+            stack3 = copy.copy(stack1)
+            stack3.append(j)
             if resMin > res:
-                resMin,stack = res,stack1
+                resMin,stack = res,stack3
 
     memo[i][mask] = resMin,stack
-    # print(i,mask,memo[i][mask])
+    # print("full cond:",i,mask,memo[i][mask])
     return resMin,stack
 
 
 # dist = np.empty((n, n), dtype=int)
 # dist = generateElements(dist, n)
 
-dist = [[0, 16,18,13,20], [21,0,16,27,14],
-            [12,14,0,15,21], [11,18,19,0,21],[16,14,17,12,0]]
+dist = [[0, 2, 5 ,7, 1],
+[6, 0, 3, 8, 2],
+[8, 7, 0, 4, 7],
+[12, 4, 6, 0, 5],
+[1, 3, 2, 8 ,0]]
+
 dist = np.array(dist)
 display(dist)
 
@@ -63,14 +73,15 @@ minCost = 10**10
 stack = []
 minStack.append(0)
 
-for i in range(1, n):
-    stack = [0]
-    stack.append(i)
+for i in range(1,3):
+    stack = []
     cost,stack = tspSolver(i, (1 << (n))-1,stack)
+    stack.append(i)
+    stack.append(0)
     cost = cost +dist[0][i]
     if minCost > cost:
         minCost,minStack = cost,stack
-    print(cost, stack)
+    # print(cost, stack)
 print("The cost of most efficient tour = " + str(minCost))
 print("The order of nodes : ",minStack)
 # print(memo)
