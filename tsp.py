@@ -4,7 +4,7 @@ import numpy as np
 from display import display
 from rep import representation
 
-n = 5
+n = 12
 
 memo =  [[(-1, []) for _ in range(1 << n)] for _ in range(n)]
 
@@ -57,11 +57,11 @@ def tspSolver(i, mask,stack):
     return resMin,stack
 
 
-# dist = np.empty((n, n), dtype=int)
-# dist = generateElements(dist, n)
+dist = np.empty((n, n), dtype=int)
+dist = generateElements(dist, n)
 
-dist =[[0, 16,18,13,20], [21,0,16,27,14],
-            [12,14,0,15,21], [11,18,19,0,21],[16,14,17,12,0]]
+# dist =[[0, 16,18,13,20], [21,0,16,27,14],
+#             [12,14,0,15,21], [11,18,19,0,21],[16,14,17,12,0]]
 
 
 
